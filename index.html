@@ -1,4 +1,4 @@
-﻿<html lang="ja">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://cdn.datatables.net/t/bs-3.3.6/jqc-1.12.0,dt-1.10.11/datatables.min.css" />
@@ -19,31 +19,101 @@
         });
     </script>
     <title></title>
+
+    <style type="text/css">
+        * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        .result {
+            margin: 0 0 3px;
+            color: #888;
+        }
+        p {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+        .point {
+            color: #00AA3E;
+            font-weight: bold;
+        }
+
+        .table > tbody > tr > td, .table > tbody > tr > th {
+            padding: 5px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .table > thead > tr > td, .table > thead > tr > th {
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border-top: 1px solid #ddd;
+        }
+
+        .standings-score {
+            color: #0000FF;
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+    </style>
 </head>
 
 <body>
     <div id="app">
         <div class="container">
             <!--<table id="foo-table" class="table table-bordered table-hover table-responsive">
-        <thead>
-            <tr>
-                <th>順位</th>
-                <th>ユーザ</th>
-                <th>score</th>
-                <th v-for="i in problemnum">{{i}}</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="r in tableinfo">
-                <td v-for="w in r">
-                    {{w}}
-                </td>
-            </tr>
-        </tbody>
-    </table>-->
+                <thead>
+                    <tr>
+                        <th>順位</th>
+                        <th>ユーザ</th>
+                        <th>score</th>
+                        <th v-for="i in problemnum">{{i}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="r in tableinfo">
+                        <td v-for="w in r">
+                            {{w}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>-->
             <v-client-table :columns="columns" :data="tableinfo" :options="options">
-            </v-client-table>
-        </div>
+                <!--<div v-if="tableinfo[cl] == 97">-->
+                <!--<div slot='A' slot-scope="props" class="result">
+        <div v-if="parseInt(props.row.A) >= 60" class="point">{{props.row.A}} </div>
+        <div v-else class="point">{{props.row.A}}</div>
+
+    </div>--><div slot='score' slot-scope='props' class='standings-score'>{{props.row.score}}
+                </div>
+
+    <div id="wrap">
+        
+
+        <script>
+                    var h = "<div slot='A' slot-scope='props' class='result'><div v-if='parseInt(props.row.A) >= 60' class='point'>{{props.row.A}} </div><div v-else-if='parseInt(props.row.A) === 0'>-</div><div v-else class='point'>{{props.row.A}}</div></div>";
+                        var str = '';
+                        for (i = 0; 10> i; i++) {
+                            console.log( h.replace(/A/g,String.fromCharCode(65 + i) ))
+                            document.getElementById('wrap').insertAdjacentHTML('afterend', h.replace(/A/g,String.fromCharCode(65 + i) ));
+                        }
+
+        </script>
+    </div>
+</v-client-table>
+    </div>
     </div>
     <script>
         Vue.use(VueTables.ClientTable);
@@ -51,10 +121,10 @@
             el: '#app',
             data: {
                 usernum: 0,
-                problemnum:0,
+                problemnum: 0,
                 tableinfo: [],
                 columns: [
-                    'rank','user','score'
+                    'rank', 'user', 'score'
                 ],
                 options: {
                     headings: {
@@ -70,7 +140,7 @@
                     .then(response => {
                         dict = {}
                         for (let v of response.data.feed.entry) {
-                            if(typeof(dict[parseInt(v['gs$cell']['row'])]) != "object")
+                            if (typeof (dict[parseInt(v['gs$cell']['row'])]) != "object")
                                 dict[parseInt(v['gs$cell']['row'])] = {}
                             dict[parseInt(v['gs$cell']['row'])][parseInt(v['gs$cell']['col'])] = v['gs$cell']['$t']
                         }
@@ -80,7 +150,7 @@
 
                         for (let i = 0; i < this.problemnum; i++) {
                             this.columns.push(String.fromCharCode(65 + i))
-                            this.options.headings[String.fromCharCode(65)]=String.fromCharCode(65)
+                            this.options.headings[String.fromCharCode(65)] = String.fromCharCode(65)
                         }
 
 
@@ -92,7 +162,7 @@
 
                                 this.tableinfo[i][this.columns[j]] = dict[y][x]
                             }
-                            
+
                         }
                     })
                 console.log("hey")
